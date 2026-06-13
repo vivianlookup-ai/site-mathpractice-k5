@@ -1,0 +1,31 @@
+---
+// Checkout redirect: Yearly Premium (Best Value)
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCheckoutUrl } from '@/lib/payment';
+
+const planName = 'Premium Yearly';
+const price = '$49.99/year';
+const checkoutUrl = getCheckoutUrl('yearly');
+---
+
+<BaseLayout title={`${planName} — Checkout | MathPractice K5`} description={`Purchase ${planName} for unlimited math worksheets — best value.`}>
+  <section class="section" style="min-height: 60vh; display: flex; align-items: center; justify-content: center;">
+    <div class="container" style="text-align: center; max-width: 500px;">
+      <div style="font-size: 3rem; margin-bottom: 16px;">🔒</div>
+      <h1 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 12px;">Redirecting to Checkout...</h1>
+      <p style="color: var(--text-secondary); margin-bottom: 24px;">
+        You're purchasing <strong>{planName}</strong> ({price}).
+        You'll be redirected to our secure checkout powered by LemonSqueezy.
+      </p>
+      <p style="font-size: 0.8125rem; color: var(--text-tertiary); margin-bottom: 24px;">
+        Visa, Mastercard, Amex, PayPal, Apple Pay, and Google Pay accepted.
+      </p>
+      <a href={checkoutUrl} class="btn btn-primary">
+        Continue to Checkout →
+      </a>
+      <div style="margin-top: 16px;">
+        <a href="/pricing/" style="font-size: 0.8125rem; color: var(--text-tertiary);">← Back to pricing</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

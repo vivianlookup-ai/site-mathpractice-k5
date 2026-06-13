@@ -1,0 +1,126 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const grades = [
+  { id: 'k', badge: 'K', name: 'Kindergarten', color: '#0075de', desc: 'Counting, number recognition, shapes, and basic patterns.', count: '20+' },
+  { id: '1', badge: '1', name: 'Grade 1', color: '#2e7d32', desc: 'Addition, subtraction, place value, and telling time.', count: '25+' },
+  { id: '2', badge: '2', name: 'Grade 2', color: '#e65100', desc: 'Two-digit operations, measurement, and money math.', count: '25+' },
+  { id: '3', badge: '3', name: 'Grade 3', color: '#6a1b9a', desc: 'Multiplication, division, fractions basics, and geometry.', count: '30+' },
+  { id: '4', badge: '4', name: 'Grade 4', color: '#c62828', desc: 'Multi-digit operations, equivalent fractions, and angles.', count: '30+' },
+  { id: '5', badge: '5', name: 'Grade 5', color: '#004d40', desc: 'Decimals, fractions operations, volume, and order of operations.', count: '30+' },
+];
+
+const features = [
+  { icon: '📄', title: 'Print-Ready Worksheets', desc: 'Every worksheet is a clean, printer-friendly PDF. No ads, no distractions — just math practice.' },
+  { icon: '🎯', title: 'Grade-Aligned Content', desc: 'All worksheets follow Common Core standards for K-5. Know your child is practicing the right skills.' },
+  { icon: '🏠', title: 'Homeschool Friendly', desc: 'Perfect for homeschooling parents. Easy to print, easy to grade, with answer keys included.' },
+  { icon: '🆓', title: 'Always Free Basics', desc: 'Start with free worksheets on every topic. Upgrade for full access to all difficulty levels and answer keys.' },
+];
+---
+
+<BaseLayout title="Free Printable Math Worksheets for K-5" description="MathPractice K5 offers free printable math worksheets for Kindergarten through Grade 5. Practice addition, subtraction, multiplication, division, fractions, and more.">
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <h1>Free Printable <span>Math Worksheets</span> for K–5</h1>
+      <p>
+        Help your child build math confidence with thousands of printable worksheets.
+        Created for parents, teachers, and homeschoolers — from Kindergarten to Grade 5.
+      </p>
+      <div class="hero-actions">
+        <a href="#grades" class="btn btn-primary">Browse by Grade</a>
+        <a href="/grade/3/multiplication/" class="btn btn-secondary">Popular: Multiplication &rarr;</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Grades -->
+  <section class="section" id="grades">
+    <div class="container">
+      <div class="section-header">
+        <h2>Choose a Grade Level</h2>
+        <p>Select your child's grade to find the right math practice worksheets.</p>
+      </div>
+      <div class="grade-grid">
+        {grades.map((g) => (
+          <a href={`/grade/${g.id}/`} class="grade-card">
+            <div class="grade-card-header">
+              <div class="grade-badge" style={`background: ${g.color};`}>{g.badge}</div>
+              <div>
+                <h3>{g.name}</h3>
+              </div>
+            </div>
+            <p>{g.desc}</p>
+            <div class="grade-card-meta">
+              <span>{g.count} worksheets</span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Popular Topics -->
+  <section class="section" style="background: var(--bg-secondary);">
+    <div class="container">
+      <div class="section-header">
+        <h2>Popular Topics</h2>
+        <p>The math skills parents and teachers search for most.</p>
+      </div>
+      <div class="topic-grid">
+        {[
+          { icon: '✖️', bg: '#f3e5f5', title: 'Multiplication', grade: 'Grade 3', href: '/grade/3/multiplication/' },
+          { icon: '➕', bg: '#e8f5e9', title: 'Addition', grade: 'Grade 2', href: '/grade/2/addition/' },
+          { icon: '➗', bg: '#fff3e0', title: 'Division', grade: 'Grade 3', href: '/grade/3/division/' },
+          { icon: '🍕', bg: '#e3f2fd', title: 'Fractions', grade: 'Grade 4', href: '/grade/4/fractions/' },
+          { icon: '➖', bg: '#fce4ec', title: 'Subtraction', grade: 'Grade 1', href: '/grade/1/subtraction/' },
+          { icon: '🔢', bg: '#e8f5e9', title: 'Place Value', grade: 'Grade 2', href: '/grade/2/place-value/' },
+          { icon: '⏰', bg: '#fff3e0', title: 'Telling Time', grade: 'Grade 1', href: '/grade/1/time/' },
+          { icon: '💰', bg: '#e3f2fd', title: 'Money Math', grade: 'Grade 2', href: '/grade/2/money/' },
+          { icon: '🔟', bg: '#f3e5f5', title: 'Decimals', grade: 'Grade 5', href: '/grade/5/decimals/' },
+          { icon: '📐', bg: '#e8f5e9', title: 'Geometry', grade: 'Grade 4', href: '/grade/4/geometry/' },
+          { icon: '📊', bg: '#fff3e0', title: 'Fractions & Decimals', grade: 'Grade 5', href: '/grade/5/fractions-and-decimals/' },
+          { icon: '🧮', bg: '#fce4ec', title: 'Counting', grade: 'Kindergarten', href: '/grade/k/counting/' },
+        ].map((t) => (
+          <a href={t.href} class="topic-card">
+            <div class="topic-icon" style={`background: ${t.bg};`}>{t.icon}</div>
+            <div class="topic-info">
+              <h4>{t.title}</h4>
+              <span>{t.grade}</span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <h2>Why MathPractice K5?</h2>
+        <p>Designed with parents and teachers in mind.</p>
+      </div>
+      <div class="features">
+        {features.map((f) => (
+          <div class="feature-card">
+            <div style="font-size: 2rem; margin-bottom: 12px;">{f.icon}</div>
+            <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 8px;">{f.title}</h3>
+            <p style="font-size: 0.875rem; color: var(--text-secondary); line-height: 1.6;">{f.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- About / CTA -->
+  <section class="section" style="background: var(--accent-light);">
+    <div class="container" style="text-align: center; max-width: 640px; margin: 0 auto;">
+      <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 12px;">Ready to Start Practicing?</h2>
+      <p style="color: var(--text-secondary); font-size: 1rem; margin-bottom: 24px;">
+        No sign-up needed. Pick a grade, choose a topic, and print — it's that simple.
+      </p>
+      <a href="#grades" class="btn btn-primary">Browse All Grades</a>
+    </div>
+  </section>
+</BaseLayout>

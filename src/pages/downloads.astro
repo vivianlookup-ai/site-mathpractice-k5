@@ -1,0 +1,174 @@
+---
+// Premium Downloads Page — All downloadable PDFs for premium members
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { grades } from '@/lib/grades';
+import { PRICING } from '@/lib/payment';
+
+// Collect all topics across all grades
+const allTopics = grades.flatMap((g) =>
+  g.topics.map((t) => ({
+    gradeId: g.id,
+    gradeName: g.name,
+    gradeColor: g.color,
+    topic: t,
+  }))
+);
+---
+
+<BaseLayout title="Premium Downloads — MathPractice K5" description="Access all your premium math worksheets in one place.">
+  <section class="section" style="padding: 40px 0 20px;">
+    <div class="container">
+      <div style="display: flex; align-items: flex-start; gap: 16px; margin-bottom: 12px;">
+        <div style="font-size: 2.5rem;">⭐</div>
+        <div>
+          <h1 style="font-size: 2rem; font-weight: 800; letter-spacing: -0.02em; line-height: 1.2; margin-bottom: 8px;">Premium Downloads</h1>
+          <p style="font-size: 1rem; color: var(--text-secondary);">
+            Welcome, Premium member! Browse and download all worksheets below.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick Stats -->
+  <section class="section" style="padding: 0 0 40px;">
+    <div class="container">
+      <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+        <div style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; flex: 1; min-width: 160px; text-align: center;">
+          <div style="font-size: 2rem; font-weight: 800; color: var(--accent);">{grades.length}</div>
+          <div style="font-size: 0.8125rem; color: var(--text-tertiary);">Grade Levels</div>
+        </div>
+        <div style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; flex: 1; min-width: 160px; text-align: center;">
+          <div style="font-size: 2rem; font-weight: 800; color: var(--accent);">{allTopics.length}</div>
+          <div style="font-size: 0.8125rem; color: var(--text-tertiary);">Topics</div>
+        </div>
+        <div style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; flex: 1; min-width: 160px; text-align: center;">
+          <div style="font-size: 2rem; font-weight: 800; color: var(--accent);">
+            {allTopics.reduce((sum, t) => sum + t.topic.worksheetCount, 0)}
+          </div>
+          <div style="font-size: 0.8125rem; color: var(--text-tertiary);">Worksheets</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Grade Navigation -->
+  <section class="section" style="padding: 0 0 40px;">
+    <div class="container">
+      <h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 16px;">Jump to Grade</h2>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        {grades.map((g) => (
+          <a href={`#grade-${g.id}`} class="btn btn-secondary btn-sm" style={`border-left: 3px solid ${g.color};`}>
+            {g.name}
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- All Worksheets by Grade -->
+  {grades.map((grade) => (
+    <section class="section" style="padding: 0 0 40px;" id={`grade-${grade.id}`}>
+      <div class="container">
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid var(--border-light);">
+          <div class="grade-badge" style={`background: ${grade.color}; width: 36px; height: 36px; font-size: 0.9rem;`}>{grade.label}</div>
+          <h2 style="font-size: 1.375rem; font-weight: 700;">{grade.name}</h2>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          {grade.topics.map((topic) => (
+            <details class="premium-topic-group">
+              <summary class="premium-topic-summary">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <span>{topic.icon}</span>
+                  <span style="font-weight: 600;">{topic.name}</span>
+                  <span style="font-size: 0.75rem; color: var(--text-tertiary);">({topic.worksheetCount} worksheets)</span>
+                </div>
+                <span style="font-size: 0.75rem; color: var(--text-tertiary);">
+                  {topic.difficulty}
+                </span>
+              </summary>
+              <div style="padding: 12px 0 8px; display: flex; flex-direction: column; gap: 4px;">
+                {Array.from({ length: topic.worksheetCount }, (_, i) => (
+                  <div class="premium-ws-row">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                      <span>📄</span>
+                      <span style="font-size: 0.875rem;">
+                        {topic.name} Worksheet {i + 1}
+                      </span>
+                      <span class={`difficulty difficulty-${i < Math.ceil(topic.worksheetCount / 3) ? 'easy' : i < Math.ceil(topic.worksheetCount * 2 / 3) ? 'medium' : 'hard'}`} style="font-size: 0.65rem; padding: 1px 6px;">
+                        {i < Math.ceil(topic.worksheetCount / 3) ? 'Easy' : i < Math.ceil(topic.worksheetCount * 2 / 3) ? 'Medium' : 'Hard'}
+                      </span>
+                    </div>
+                    <a href={`/worksheets/${grade.id}-${topic.id}-${i + 1}.pdf`} class="btn btn-primary btn-sm" style="font-size: 0.75rem; padding: 4px 12px;" download>
+                      Download PDF
+                    </a>
+                  </div>
+                ))}
+              </div>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+  ))}
+
+  <!-- Premium management footer -->
+  <section class="section" style="background: var(--bg-secondary); border-top: 1px solid var(--border);">
+    <div class="container" style="text-align: center;">
+      <p style="font-size: 0.875rem; color: var(--text-tertiary); margin-bottom: 12px;">
+        Need help? <a href="/contact/">Contact support</a> · 
+        Manage your subscription via <a href="https://mathpracticek5.lemonsqueezy.com/billing" target="_blank">LemonSqueezy Customer Portal</a>
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .premium-topic-group {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--bg-secondary);
+  }
+
+  .premium-topic-summary {
+    padding: 14px 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    user-select: none;
+    font-size: 0.9375rem;
+  }
+
+  .premium-topic-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .premium-topic-summary::after {
+    content: '+';
+    font-size: 1.125rem;
+    color: var(--text-tertiary);
+    transition: transform 0.2s ease;
+  }
+
+  .premium-topic-group[open] .premium-topic-summary::after {
+    content: '−';
+  }
+
+  .premium-topic-summary:hover {
+    background: var(--bg-hover);
+  }
+
+  .premium-ws-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 16px 6px 28px;
+    transition: background 0.1s ease;
+  }
+
+  .premium-ws-row:hover {
+    background: var(--bg-hover);
+  }
+</style>

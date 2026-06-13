@@ -1,0 +1,16 @@
+{
+  "name": "mathpracticek5",
+  "version": "1.0.0",
+  "description": "MathPractice K5 — Free printable math worksheets for K-5",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@lemonsqueezy/lemonsqueezy.js": "^4.0.0",
+    "astro": "^6.4.6"
+  }
+}

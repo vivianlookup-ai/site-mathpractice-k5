@@ -1,0 +1,137 @@
+---
+import '../styles/global.css';
+
+export interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+const canonical = Astro.url.pathname;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title} | MathPractice K5</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={`https://mathpracticek5.com${canonical}`} />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content={`${title} | MathPractice K5`} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={`https://mathpracticek5.com${canonical}`} />
+    <meta property="og:site_name" content="MathPractice K5" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={`${title} | MathPractice K5`} />
+    <meta name="twitter:description" content={description} />
+
+    <!-- Structured Data -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "MathPractice K5",
+      "url": "https://mathpracticek5.com",
+      "description": "Free printable math worksheets for Kindergarten through Grade 5.",
+      "educationalLevel": ["Kindergarten", "Grade 1", "Grade 2", "Grade 3", "Grade 4", "Grade 5"],
+      "audience": {
+        "@type": "EducationalAudience",
+        "educationalRole": ["parent", "teacher", "homeschooler"]
+      }
+    }, null)} />
+    </script>
+  </head>
+  <body>
+    <header class="header">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <span class="logo-icon">K5</span>
+          MathPractice K5
+        </a>
+        <nav class="nav">
+          <a href="/" class={canonical === '/' ? 'active' : ''}>Home</a>
+          <div class="nav-grades">
+            {['K', '1', '2', '3', '4', '5'].map((g) => (
+              <a
+                href={`/grade/${g}/`}
+                class={`nav-grade-btn${canonical.startsWith(`/grade/${g}`) ? ' active' : ''}`}
+              >
+                {g === 'K' ? 'K' : `G${g}`}
+              </a>
+            ))}
+          </div>
+          <a
+            href="/pricing/"
+            class={canonical.startsWith('/pricing') ? 'active nav-premium' : 'nav-premium'}
+          >
+            Pricing
+          </a>
+          <a
+            href="/downloads/"
+            class={canonical.startsWith('/downloads') ? 'active' : ''}
+            id="nav-downloads"
+            style="display: none;"
+          >
+            Downloads
+          </a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer style="background: var(--bg-secondary); border-top: 1px solid var(--border); padding: 40px 0; margin-top: 60px;">
+      <div class="container" style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 32px;">
+        <div>
+          <div style="font-weight: 700; font-size: 1rem; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+            <span style="width: 24px; height: 24px; background: var(--accent); border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 0.7rem;">K5</span>
+            MathPractice K5
+          </div>
+          <p style="font-size: 0.8125rem; color: var(--text-tertiary); max-width: 280px;">
+            Free printable math worksheets for kindergarten through grade 5. Helping parents and teachers give every child the math practice they need.
+          </p>
+        </div>
+        <div>
+          <div style="font-weight: 600; font-size: 0.875rem; margin-bottom: 12px; color: var(--text-primary);">Grades</div>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            {['K', '1', '2', '3', '4', '5'].map((g) => (
+              <a href={`/grade/${g}/`} style="font-size: 0.8125rem; color: var(--text-secondary);">
+                {g === 'K' ? 'Kindergarten' : `Grade ${g}`}
+              </a>
+            ))}
+          </div>
+        </div>
+        <div>
+          <div style="font-weight: 600; font-size: 0.875rem; margin-bottom: 12px; color: var(--text-primary);">Popular Topics</div>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <a href="/grade/3/multiplication/" style="font-size: 0.8125rem; color: var(--text-secondary);">Multiplication Worksheets</a>
+            <a href="/grade/2/addition/" style="font-size: 0.8125rem; color: var(--text-secondary);">Addition Worksheets</a>
+            <a href="/grade/4/fractions/" style="font-size: 0.8125rem; color: var(--text-secondary);">Fractions Worksheets</a>
+            <a href="/grade/1/subtraction/" style="font-size: 0.8125rem; color: var(--text-secondary);">Subtraction Worksheets</a>
+            <a href="/grade/5/decimals/" style="font-size: 0.8125rem; color: var(--text-secondary);">Decimals Worksheets</a>
+          </div>
+        </div>
+        <div>
+          <div style="font-weight: 600; font-size: 0.875rem; margin-bottom: 12px; color: var(--text-primary);">Legal</div>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <a href="/privacy/" style="font-size: 0.8125rem; color: var(--text-secondary);">Privacy Policy</a>
+            <a href="/terms/" style="font-size: 0.8125rem; color: var(--text-secondary);">Terms of Use</a>
+            <a href="/contact/" style="font-size: 0.8125rem; color: var(--text-secondary);">Contact</a>
+          </div>
+        </div>
+      </div>
+      <div class="container" style="margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--border-light); font-size: 0.75rem; color: var(--text-tertiary); text-align: center;">
+        &copy; {new Date().getFullYear()} MathPractice K5. All rights reserved.
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,43 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+const plan = Astro.url.searchParams.get('plan');
+const planNames: Record<string, string> = { monthly: 'Premium Monthly', yearly: 'Premium Yearly', lifetime: 'Lifetime Access' };
+const planName = plan && planNames[plan] ? planNames[plan] : 'Premium';
+---
+
+<BaseLayout title="Payment Successful — Welcome to Premium! | MathPractice K5" description="Thank you for your purchase! You now have premium access to all MathPractice K5 worksheets.">
+  <section class="section" style="min-height: 60vh; display: flex; align-items: center; justify-content: center;">
+    <div class="container" style="text-align: center; max-width: 560px;">
+      <div style="font-size: 4rem; margin-bottom: 16px;">🎉</div>
+      <h1 style="font-size: 2rem; font-weight: 800; margin-bottom: 12px;">You're Now a Premium Member!</h1>
+      <p style="font-size: 1.125rem; color: var(--text-secondary); margin-bottom: 8px;">
+        {planName} activated — your payment was successful. You now have full access to every worksheet, answer key, and difficulty level.
+      </p>
+      <div style="background: var(--accent-light); border-radius: var(--radius-lg); padding: 24px; margin: 24px 0; text-align: left;">
+        <h3 style="font-size: 0.9375rem; font-weight: 700; margin-bottom: 12px;">📋 What to do next:</h3>
+        <ol style="padding-left: 20px; font-size: 0.875rem; color: var(--text-secondary); line-height: 1.8;">
+          <li><strong>Check your email</strong> — You'll receive a confirmation from LemonSqueezy with your receipt.</li>
+          <li><strong>Browse worksheets</strong> — Premium worksheets now show "Download" instead of "Locked" on every topic page.</li>
+          <li><strong>Bookmark this page</strong> — Come back anytime to access your premium content.</li>
+        </ol>
+      </div>
+      <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+        <a href="/downloads/" class="btn btn-primary">Access Premium Downloads →</a>
+        <a href="/#grades" class="btn btn-secondary">Browse All Grades</a>
+      </div>
+      <p style="margin-top: 24px; font-size: 0.8125rem; color: var(--text-tertiary);">
+        A confirmation email has been sent to your inbox. If you don't see it, check your spam folder.<br />
+        Bookmark the <a href="/downloads/">Premium Downloads page</a> for quick access.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  // Set premium flag in localStorage for client-side access detection
+  localStorage.setItem('mathpractice_premium', 'true');
+  // Track conversion for analytics (optional)
+  if (typeof window !== 'undefined' && window.dataLayer) {
+    window.dataLayer.push({ event: 'purchase_complete', plan: '{plan || "unknown"}' });
+  }
+</script>

@@ -1,0 +1,325 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getGrade, getTopic } from '@/lib/grades';
+import { FREE_WORKSHEETS_PER_TOPIC, getAccessLevel, PRICING, getCheckoutUrl } from '@/lib/payment';
+
+export async function getStaticPaths() {
+  const { grades } = await import('@/lib/grades');
+  const paths: { params: Record<string, string>; props: Record<string, any> }[] = [];
+  for (const grade of grades) {
+    for (const topic of grade.topics) {
+      paths.push({
+        params: { grade: grade.id, topic: topic.id },
+        props: { grade, topic, allGrades: grades },
+      });
+    }
+  }
+  return paths;
+}
+
+const { grade, topic, allGrades } = Astro.props;
+
+const gradeTopics = grade.topics;
+const topicIndex = gradeTopics.findIndex((t) => t.id === topic.id);
+const prevTopic = topicIndex > 0 ? gradeTopics[topicIndex - 1] : null;
+const nextTopic = topicIndex < gradeTopics.length - 1 ? gradeTopics[topicIndex + 1] : null;
+
+// Generate worksheet data with access levels
+const worksheets = Array.from({ length: topic.worksheetCount }, (_, i) => ({
+  id: `${grade.id}-${topic.id}-${i + 1}`,
+  number: i + 1,
+  title: `${topic.name} Worksheet ${i + 1}`,
+  difficulty: i < Math.ceil(topic.worksheetCount / 3) ? 'Easy'
+    : i < Math.ceil(topic.worksheetCount * 2 / 3) ? 'Medium'
+    : 'Hard',
+  pageCount: 2,
+  hasAnswerKey: i >= Math.floor(topic.worksheetCount / 2),
+  access: getAccessLevel(i) as 'free' | 'premium',
+}));
+
+const freeCount = FREE_WORKSHEETS_PER_TOPIC;
+const premiumCount = topic.worksheetCount - freeCount;
+---
+
+<BaseLayout title={`${topic.seoH1} | ${grade.name}`} description={topic.seoDescription}>
+  <!-- Breadcrumb -->
+  <div class="container" style="padding-top: 20px;">
+    <nav style="font-size: 0.8125rem; color: var(--text-tertiary); display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+      <a href="/" style="color: var(--text-tertiary);">Home</a>
+      <span>/</span>
+      <a href={`/grade/${grade.id}/`} style="color: var(--text-tertiary);">{grade.name}</a>
+      <span>/</span>
+      <span style="color: var(--text-secondary);">{topic.name}</span>
+    </nav>
+  </div>
+
+  <!-- Topic Header -->
+  <section class="section" style="padding: 40px 0 20px;">
+    <div class="container">
+      <div style="display: flex; align-items: flex-start; gap: 16px; margin-bottom: 16px;">
+        <div class="topic-icon" style={`background: ${topic.bgColor}; width: 48px; height: 48px; font-size: 1.5rem; border-radius: 10px;`}>{topic.icon}</div>
+        <div>
+          <h1 style="font-size: 2rem; font-weight: 800; letter-spacing: -0.02em; line-height: 1.2;">{topic.seoH1}</h1>
+          <p style="font-size: 1rem; color: var(--text-secondary); margin-top: 8px; max-width: 640px;">
+            {topic.description}
+          </p>
+          <div style="display: flex; gap: 16px; margin-top: 12px; flex-wrap: wrap;">
+            <span style="font-size: 0.8125rem; color: var(--text-tertiary);">
+              📄 Grade: <strong>{grade.name}</strong>
+            </span>
+            <span class={`difficulty difficulty-${topic.difficulty.toLowerCase()}`}>
+              {topic.difficulty === 'Easy' ? '🟢 ' : topic.difficulty === 'Medium' ? '🟡 ' : '🔴 '}
+              {topic.difficulty}
+            </span>
+            <span style="font-size: 0.8125rem; color: var(--text-tertiary);">
+              📄 {freeCount} free + {premiumCount} premium worksheets
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Intro Content (SEO unique content) -->
+  <section class="section" style="padding: 0 0 40px;">
+    <div class="container" style="max-width: 720px;">
+      <div style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; line-height: 1.7; font-size: 0.9375rem; color: var(--text-secondary);">
+        <p style="margin-bottom: 12px;">
+          <strong style="color: var(--text-primary);">Looking for free printable {grade.name.toLowerCase()} {topic.name.toLowerCase()} worksheets?</strong>
+          You've come to the right place. MathPractice K5 offers a growing collection of high-quality, printer-friendly PDF worksheets designed to help students master {topic.name.toLowerCase()}.
+        </p>
+        <p style="margin-bottom: 12px;">
+          Each worksheet features carefully crafted problems that build skills step by step. Our {topic.name.toLowerCase()} worksheets for {grade.name.toLowerCase()} include:
+        </p>
+        <ul style="padding-left: 20px; margin-bottom: 12px;">
+          <li style="margin-bottom: 4px;">Clear instructions and plenty of practice space</li>
+          <li style="margin-bottom: 4px;">Multiple difficulty levels to match your student's needs</li>
+          <li style="margin-bottom: 4px;">Answer keys available for self-checking</li>
+          <li style="margin-bottom: 4px;">Grade-appropriate content aligned with common core standards</li>
+        </ul>
+        <p>
+          Try the first {freeCount} worksheets for free — no sign-up required. Unlock all {topic.worksheetCount} worksheets with Premium.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Banner (inline upsell) -->
+  <section class="section" style="padding: 0 0 40px;">
+    <div class="container" style="max-width: 720px;">
+      <div class="upsell-banner">
+        <div class="upsell-content">
+          <div class="upsell-icon">⭐</div>
+          <div>
+            <h3 class="upsell-title">Unlock All {topic.worksheetCount} Worksheets</h3>
+            <p class="upsell-desc">
+              Get full access to all difficulty levels, complete answer keys, and unlimited printing. 
+              {premiumCount} more premium worksheets available for this topic.
+            </p>
+          </div>
+        </div>
+        <div class="upsell-actions">
+          <a href="/pricing/" class="btn btn-primary btn-sm">See Plans from {PRICING.monthly.price}{PRICING.monthly.period}</a>
+          <a href={getCheckoutUrl('monthly')} class="btn btn-secondary btn-sm">Subscribe Now</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Worksheets List -->
+  <section class="section" style="padding: 0 0 60px;">
+    <div class="container">
+      <h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 16px;">
+        {topic.name} Worksheets ({freeCount} free + {premiumCount} premium)
+      </h2>
+      <div class="worksheet-list">
+        {worksheets.map((ws) => (
+          <div class={`worksheet-item${ws.access === 'premium' ? ' worksheet-item--premium' : ''}`}>
+            <div class="worksheet-info">
+              <div class="worksheet-icon" style={`background: ${topic.bgColor};`}>
+                {ws.access === 'free' ? '📄' : '🔒'}
+              </div>
+              <div>
+                <div class="worksheet-name">
+                  {ws.title}
+                  {ws.access === 'premium' && <span class="premium-badge">Premium</span>}
+                </div>
+                <div class="worksheet-meta">
+                  {ws.pageCount} pages{ws.hasAnswerKey ? ' · Includes answer key' : ''}
+                  {ws.access === 'free' ? ' · Free' : ''}
+                </div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class={`difficulty difficulty-${ws.difficulty.toLowerCase()}`}>
+                {ws.difficulty}
+              </span>
+              {ws.access === 'free' ? (
+                <a href={`/worksheets/${ws.id}.pdf`} class="btn btn-primary btn-sm" download>
+                  Download PDF
+                </a>
+              ) : (
+                <a href="/pricing/" class="btn btn-primary btn-sm btn-premium">
+                  Unlock with Premium
+                </a>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Premium CTA (bottom) -->
+      <div style="margin-top: 32px; text-align: center;">
+        <div style="background: linear-gradient(135deg, var(--accent-light), #ffffff); border: 2px solid var(--accent); border-radius: var(--radius-lg); padding: 32px 24px;">
+          <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 8px;">🔓 Get Unlimited Access to All Worksheets</h3>
+          <p style="font-size: 0.9375rem; color: var(--text-secondary); max-width: 500px; margin: 0 auto 20px;">
+            Upgrade to Premium and unlock every worksheet, every answer key, all difficulty levels — across all grades and topics.
+          </p>
+          <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+            <a href="/pricing/" class="btn btn-primary">View Plans</a>
+            <a href={getCheckoutUrl('monthly')} class="btn btn-secondary">Start Premium — {PRICING.monthly.price}{PRICING.monthly.period}</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Topic Navigation -->
+  <section class="section" style="padding: 20px 0 40px; background: var(--bg-secondary);">
+    <div class="container">
+      <div style="display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+        <div>
+          {prevTopic && (
+            <a href={`/grade/${grade.id}/${prevTopic.id}/`} class="btn btn-secondary btn-sm">
+              ← {prevTopic.name}
+            </a>
+          )}
+        </div>
+        <div>
+          <a href={`/grade/${grade.id}/`} class="btn btn-secondary btn-sm">
+            All {grade.name} Topics ↑
+          </a>
+        </div>
+        <div>
+          {nextTopic && (
+            <a href={`/grade/${grade.id}/${nextTopic.id}/`} class="btn btn-secondary btn-sm">
+              {nextTopic.name} →
+            </a>
+          )}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Related Topics (same topic across other grades) -->
+  <section class="section" style="padding: 40px 0;">
+    <div class="container">
+      <h2 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 16px; text-align: center;">
+        {topic.name} in Other Grades
+      </h2>
+      <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+        {(() => {
+          return allGrades
+            .filter((g: any) => g.id !== grade.id)
+            .map((g: any) => {
+              const sameTopic = g.topics.find((t: any) => t.id === topic.id);
+              return sameTopic ? (
+                <a href={`/grade/${g.id}/${sameTopic.id}/`} class="btn btn-secondary btn-sm">
+                  {g.name} {sameTopic.name}
+                </a>
+              ) : null;
+            });
+        })()}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .worksheet-item--premium {
+    border-left: 3px solid var(--accent);
+  }
+
+  .premium-badge {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: var(--accent);
+    color: white;
+    padding: 1px 8px;
+    border-radius: 3px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+
+  .btn-premium {
+    background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+    color: white;
+    border: none;
+  }
+
+  .btn-premium:hover {
+    background: var(--accent-dark);
+    color: white;
+  }
+
+  .upsell-banner {
+    background: linear-gradient(135deg, var(--accent-light) 0%, #fff 50%, var(--accent-light) 100%);
+    border: 1px solid var(--accent);
+    border-radius: var(--radius-lg);
+    padding: 20px 24px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .upsell-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    flex: 1;
+    min-width: 240px;
+  }
+
+  .upsell-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .upsell-title {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .upsell-desc {
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  .upsell-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 640px) {
+    .upsell-banner {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .upsell-actions {
+      justify-content: stretch;
+    }
+    .upsell-actions .btn {
+      flex: 1;
+      justify-content: center;
+    }
+  }
+</style>

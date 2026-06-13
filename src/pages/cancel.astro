@@ -1,0 +1,27 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Payment Cancelled | MathPractice K5" description="Your payment was cancelled. No charges were made.">
+  <section class="section" style="min-height: 60vh; display: flex; align-items: center; justify-content: center;">
+    <div class="container" style="text-align: center; max-width: 500px;">
+      <div style="font-size: 4rem; margin-bottom: 16px;">🤷</div>
+      <h1 style="font-size: 2rem; font-weight: 800; margin-bottom: 12px;">Payment Cancelled</h1>
+      <p style="font-size: 1.125rem; color: var(--text-secondary); margin-bottom: 24px;">
+        No worries — no charges were made. Your free worksheets are still available anytime.
+      </p>
+      <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+        <a href="/pricing/" class="btn btn-primary">Try Again</a>
+        <a href="/#grades" class="btn btn-secondary">Browse Free Worksheets</a>
+      </div>
+      <p style="margin-top: 24px; font-size: 0.8125rem; color: var(--text-tertiary);">
+        Questions? <a href="/contact/">Contact us</a>
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  // Clear premium flag when payment is cancelled
+  localStorage.removeItem('mathpractice_premium');
+</script>

@@ -1,0 +1,32 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Privacy Policy" description="MathPractice K5 privacy policy. Learn how we collect, use, and protect your information.">
+  <div class="container" style="max-width: 720px; padding-top: 60px; padding-bottom: 60px;">
+    <h1 style="font-size: 2rem; font-weight: 800; margin-bottom: 8px;">Privacy Policy</h1>
+    <p style="font-size: 0.875rem; color: var(--text-tertiary); margin-bottom: 32px;">Last updated: {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+
+    <div style="line-height: 1.8; font-size: 0.9375rem; color: var(--text-secondary); display: flex; flex-direction: column; gap: 24px;">
+      <section>
+        <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">Information We Collect</h2>
+        <p>MathPractice K5 is a static website. We do not collect personal information from visitors. We may use basic analytics to understand which pages are most popular, but no personally identifiable information is tracked.</p>
+      </section>
+
+      <section>
+        <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">Cookies</h2>
+        <p>This site may use minimal cookies for analytics purposes only. No tracking cookies for advertising are used.</p>
+      </section>
+
+      <section>
+        <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">Third-Party Services</h2>
+        <p>We do not share your data with third parties. Any analytics service we use is configured to anonymize IP addresses.</p>
+      </section>
+
+      <section>
+        <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">Contact</h2>
+        <p>If you have questions about this privacy policy, please <a href="/contact/">contact us</a>.</p>
+      </section>
+    </div>
+  </div>
+</BaseLayout>

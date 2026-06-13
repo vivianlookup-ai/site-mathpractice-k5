@@ -1,0 +1,27 @@
+---
+import { grades } from '@/lib/grades';
+
+const pages: string[] = [
+  '/',
+  '/privacy/',
+  '/terms/',
+  '/contact/',
+];
+
+for (const grade of grades) {
+  pages.push(`/grade/${grade.id}/`);
+  for (const topic of grade.topics) {
+    pages.push(`/grade/${grade.id}/${topic.id}/`);
+  }
+}
+---
+
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  {pages.map((page) => (
+    <url>
+      <loc>https://mathpracticek5.com{page}</loc>
+      <changefreq>weekly</changefreq>
+      <priority>{page === '/' ? '1.0' : '0.8'}</priority>
+    </url>
+  ))}
+</urlset>
