@@ -5,12 +5,14 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "astro build && cp -r dist/client/. dist/",
     "preview": "astro preview",
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/cloudflare": "^13.7.0",
     "@lemonsqueezy/lemonsqueezy.js": "^4.0.0",
-    "astro": "^6.4.6"
+    "astro": "^6.4.6",
+    "wrangler": "^4.103.0"
   }
 }

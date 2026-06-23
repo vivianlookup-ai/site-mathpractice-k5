@@ -16,6 +16,15 @@ const canonical = Astro.url.pathname;
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-S6KW9HQZXL"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-S6KW9HQZXL');
+    </script>
     <title>{title} | MathPractice K5</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={`https://mathpracticek5.com${canonical}`} />
